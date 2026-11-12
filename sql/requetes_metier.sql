@@ -13,7 +13,8 @@ FROM v_capteur_etat GROUP BY ROLLUP (zone_code) ORDER BY zone_code NULLS LAST;
 -- R2. Répartition des incidents sur l'année, par type : volume, délai moyen, respect du SLA
 SELECT ti.libelle, count(*) AS tickets,
        round(avg(extract(epoch FROM t.resolu_le - t.ouvert_le)) / 3600, 1) AS delai_moyen_h,
-       round(100.0 * count(*) FILTER (WHERE t.resolu_le <= t.echeance_sla) / count(*) FILTER (WHERE t.resolu_le IS NOT NULL), 1) AS respect_sla_pct
+       round(100.0 * count(*) FILTER (WHERE t.resolu_le <= t.echeance_sla)
+             / nullif(count(*) FILTER (WHERE t.resolu_le IS NOT NULL), 0), 1) AS respect_sla_pct  -- NULL: none resolved yet
 FROM ticket t JOIN type_incident ti ON ti.code = t.type_code
 GROUP BY ti.libelle ORDER BY tickets DESC;
 
