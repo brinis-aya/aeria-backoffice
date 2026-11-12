@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Tickets')}"></head>
+<body>
+<header th:replace="~{fragments :: nav('tickets')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <div class="row" style="justify-content:space-between">
+        <div><h1>Tickets</h1><p class="sub">Incidents et opérations de maintenance du parc.</p></div>
+        <div class="row" th:if="${responsable}">
+            <form class="inline" method="post" th:action="@{/supervision/executer}"><button type="submit">Lancer la supervision</button></form>
+            <a class="btn primary" href="/tickets/nouveau">Nouveau ticket</a>
+        </div>
+    </div>
+    <nav class="tabs">
+        <a th:href="@{/tickets}" th:classappend="${filtre == 'actifs'} ? 'on'">Actifs</a>
+        <a th:href="@{/tickets(filtre='hors-delai')}" th:classappend="${filtre == 'hors-delai'} ? 'on'">Hors délai</a>
+        <a th:href="@{/tickets(filtre='a-valider')}" th:classappend="${filtre == 'a-valider'} ? 'on'">À valider</a>
+        <a th:unless="${responsable}" th:href="@{/tickets(filtre='mes')}" th:classappend="${filtre == 'mes'} ? 'on'">Les miens</a>
+        <a th:href="@{/tickets(filtre='clos')}" th:classappend="${filtre == 'clos'} ? 'on'">Clos</a>
+        <a th:href="@{/tickets(filtre='tous')}" th:classappend="${filtre == 'tous'} ? 'on'">Tous</a>
+    </nav>
+    <div class="card scroll">
+        <table>
+            <thead><tr><th>N°</th><th>Ouvert le</th><th>Capteur</th><th>Site</th><th>Incident</th><th>Priorité</th>
+                <th>Statut</th><th>Technicien</th><th class="n">Durée (h)</th></tr></thead>
+            <tbody>
+            <tr th:each="t : ${tickets}" th:classappend="${t.statut == 'cloture' or t.statut == 'annule'} ? 'dim'">
+                <td><a th:href="@{/tickets/{id}(id=${t.id})}" th:text="${t.id}">1</a></td>
+                <td th:text="${@fmt.dateHeure(t.ouvert_le)}">date</td>
+                <td><a th:href="@{/capteurs/{id}(id=${t.capteur_id})}" th:text="${t.capteur_id}">LH</a></td>
+                <td th:text="${t.site_nom}">site</td>
+                <td><span th:text="${t.type_libelle}">type</span><br><span class="muted" th:text="${t.titre}">titre</span></td>
+                <td><span th:replace="~{fragments :: priorite(${t.priorite})}"></span></td>
+                <td><span th:replace="~{fragments :: statut(${t.statut})}"></span>
+                    <span class="badge bad" th:if="${t.hors_delai}">hors délai</span></td>
+                <td th:text="${t.technicien}">tech</td>
+                <td class="n" th:text="${@fmt.nombre(t.duree_h)}">0</td>
+            </tr>
+            <tr th:if="${tickets.isEmpty()}"><td colspan="9" class="muted">Aucun ticket.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

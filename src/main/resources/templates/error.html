@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Erreur · Aeria back-office</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<main class="login">
+    <div class="card">
+        <h1 th:text="${status == 403} ? 'Accès refusé' : (${status == 404} ? 'Page introuvable' : 'Erreur')">Erreur</h1>
+        <p class="sub" th:text="${status == 403} ? 'Cette action est réservée à un autre rôle ou à un autre technicien.'
+                              : (${status == 404} ? 'Cet élément n''existe pas.' : 'Une erreur inattendue est survenue.')">msg</p>
+        <a class="btn primary" href="/">Retour au tableau de bord</a>
+    </div>
+</main>
+</body>
+</html>

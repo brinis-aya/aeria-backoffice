@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Ticket ' + ${t.id})}"></head>
+<body>
+<header th:replace="~{fragments :: nav('tickets')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <p class="muted"><a href="/tickets">Tickets</a> / n° <span th:text="${t.id}">1</span></p>
+    <h1 th:text="${t.titre}">Titre</h1>
+    <p class="sub">
+        <span th:replace="~{fragments :: statut(${t.statut})}"></span>
+        <span th:replace="~{fragments :: priorite(${t.priorite})}"></span>
+        <span class="badge bad" th:if="${t.hors_delai}">hors délai</span>
+        · capteur <a th:href="@{/capteurs/{id}(id=${t.capteur_id})}" th:text="${t.capteur_id}">LH</a>
+        <span th:if="${t.site_nom}" th:text="' · ' + ${t.site_nom} + ', ' + ${t.commune}"></span>
+    </p>
+
+    <div class="grid two">
+        <section class="card">
+            <h2>Détails</h2>
+            <dl class="props">
+                <dt>Type</dt><dd th:text="${t.type_libelle}">type</dd>
+                <dt>Origine</dt><dd th:text="${@fmt.statut(t.origine)} + ' (' + ${t.ouvert_par} + ')'">origine</dd>
+                <dt>Ouvert le</dt><dd th:text="${@fmt.dateHeure(t.ouvert_le)}">date</dd>
+                <dt>Échéance SLA</dt><dd th:text="${@fmt.dateHeure(t.echeance_sla)}">date</dd>
+                <dt>Résolu le</dt><dd th:text="${t.resolu_le} != null ? ${@fmt.dateHeure(t.resolu_le)} : '-'">-</dd>
+                <dt>Compétence requise</dt><dd th:text="${t.competence_requise}">ELEC</dd>
+                <dt>Description</dt><dd th:text="${t.description} ?: '-'">-</dd>
+            </dl>
+        </section>
+
+        <section class="card">
+            <h2>Actions</h2>
+            <!-- Responsable: plan an intervention (ticket open, or in progress after a failed attempt) -->
+            <form class="stack" method="post" th:action="@{/tickets/{id}/planifier(id=${t.id})}"
+                  th:if="${responsable and (t.statut == 'ouvert' or t.statut == 'assigne' or t.statut == 'en_cours')}">
+                <label>Technicien (compétents, même zone et moins chargés en premier)
+                    <select name="technicien" required>
+                        <option th:each="p : ${propositions}" th:value="${p.technicien_id}"
+                                th:text="${p.nom_complet} + ' - niveau ' + ${p.niveau} + ', ' + ${p.charge} + ' en cours' + (${p.meme_zone} ? ', même zone' : '')">tech</option>
+                    </select>
+                </label>
+                <label>Date et heure <input type="datetime-local" name="quand" required
+                                            th:value="${#temporals.format(demain9h, 'yyyy-MM-dd''T''HH:mm')}"></label>
+                <div class="row"><button class="primary" type="submit">Planifier l'intervention</button></div>
+            </form>
+            <div class="row" style="margin-top:10px" th:if="${responsable}">
+                <form class="inline" method="post" th:action="@{/tickets/{id}/cloturer(id=${t.id})}" th:if="${t.statut == 'resolu'}">
+                    <button class="primary" type="submit">Valider et clôturer</button></form>
+                <form class="inline" method="post" th:action="@{/tickets/{id}/rouvrir(id=${t.id})}" th:if="${t.statut == 'resolu'}">
+                    <button type="submit">Refuser (rouvrir)</button></form>
+                <form class="inline" method="post" th:action="@{/tickets/{id}/annuler(id=${t.id})}"
+                      th:if="${t.statut == 'ouvert' or t.statut == 'assigne'}">
+                    <button class="danger" type="submit">Annuler le ticket</button></form>
+            </div>
+            <p class="muted" th:if="${t.statut == 'cloture' or t.statut == 'annule'}">Ticket terminé : aucune action possible.</p>
+            <p class="muted" th:if="${!responsable and t.statut == 'resolu'}">En attente de validation par le responsable.</p>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+        <h2>Interventions</h2>
+        <p class="muted" th:if="${interventions.isEmpty()}">Aucune intervention planifiée.</p>
+        <div th:each="iv : ${interventions}" style="border-top:1px solid var(--line);padding:12px 0">
+            <div class="row" style="justify-content:space-between">
+                <div>
+                    <b th:text="${@fmt.statut(iv.nature)} + ' - ' + ${iv.technicien}">nature</b>
+                    <span th:if="${iv.resultat}"> <span th:replace="~{fragments :: statut(${iv.resultat})}"></span></span><br>
+                    <span class="muted" th:text="'Prévue le ' + ${@fmt.dateHeure(iv.planifiee_le)}
+                        + (${iv.debut} != null ? ' · début ' + ${@fmt.dateHeure(iv.debut)} : '')
+                        + (${iv.fin} != null ? ' · fin ' + ${@fmt.dateHeure(iv.fin)} : '')">dates</span>
+                    <p th:if="${iv.compte_rendu}" th:text="${iv.compte_rendu}" style="margin:6px 0 0">cr</p>
+                    <p class="muted" th:if="${iv.pieces}" th:text="'Pièces : ' + ${iv.pieces}" style="margin:4px 0 0">pieces</p>
+                </div>
+                <form class="inline" method="post" th:if="${iv.debut == null}"
+                      th:action="@{/tickets/{id}/interventions/{iv}/demarrer(id=${t.id},iv=${iv.id})}">
+                    <button class="primary" type="submit">Démarrer</button></form>
+            </div>
+            <form class="stack" method="post" style="margin-top:10px" th:if="${iv.debut != null and iv.fin == null}"
+                  th:action="@{/tickets/{id}/interventions/{iv}/terminer(id=${t.id},iv=${iv.id})}">
+                <label>Résultat
+                    <select name="resultat" required>
+                        <option value="reussie">Réussie - capteur réparé</option>
+                        <option value="partielle">Partielle</option>
+                        <option value="echec">Échec - nouvelle intervention nécessaire</option>
+                    </select></label>
+                <label>Compte rendu <textarea name="compteRendu" required maxlength="2000"></textarea></label>
+                <div class="row" th:each="k : ${#numbers.sequence(1, 2)}">
+                    <label style="flex:1">Pièce utilisée
+                        <select name="piece"><option value="">-</option>
+                            <option th:each="p : ${pieces}" th:value="${p.id}"
+                                    th:text="${p.reference} + ' - ' + ${p.libelle} + ' (stock ' + ${p.stock} + ')'">piece</option>
+                        </select></label>
+                    <label>Quantité <input type="number" name="quantite" min="0" max="20" value="0" style="width:90px"></label>
+                </div>
+                <div class="row"><button class="primary" type="submit">Terminer l'intervention</button></div>
+            </form>
+        </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+        <h2>Historique (RG12)</h2>
+        <ul class="timeline">
+            <li th:each="h : ${historique}">
+                <span th:text="${@fmt.dateHeure(h.change_le)}">date</span> ·
+                <span th:text="${h.ancien_statut} ? ${@fmt.statut(h.ancien_statut)} + ' → ' : 'Création → '"></span>
+                <b th:text="${@fmt.statut(h.nouveau_statut)}">statut</b>
+                <span class="muted" th:text="'par ' + ${h.par}">par</span>
+            </li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>

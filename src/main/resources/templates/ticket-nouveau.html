@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Nouveau ticket')}"></head>
+<body>
+<header th:replace="~{fragments :: nav('tickets')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <p class="muted"><a href="/tickets">Tickets</a> / nouveau</p>
+    <h1>Nouveau ticket</h1>
+    <p class="sub">Signalement manuel : la priorité et l'échéance sont déduites du type si vous ne les forcez pas (RG4).</p>
+    <form class="stack card" method="post" th:action="@{/tickets/nouveau}">
+        <label>Capteur
+            <select name="capteur" required>
+                <option th:each="c : ${capteurs}" th:value="${c}" th:text="${c}" th:selected="${c == capteurChoisi}">LH</option>
+            </select></label>
+        <label>Type d'incident
+            <select name="type" required>
+                <option th:each="ty : ${types}" th:value="${ty.code}"
+                        th:text="${ty.libelle} + ' (' + ${@fmt.priorite(ty.priorite_defaut)} + ' par défaut)'">type</option>
+            </select></label>
+        <label>Priorité
+            <select name="priorite">
+                <option value="">Selon le type</option>
+                <option value="1">P1 urgente (4 h)</option>
+                <option value="2">P2 haute (24 h)</option>
+                <option value="3">P3 normale (72 h)</option>
+            </select></label>
+        <label>Titre <input name="titre" required maxlength="160"></label>
+        <label>Description <textarea name="description" maxlength="2000"></textarea></label>
+        <div class="row"><button class="primary" type="submit">Créer le ticket</button> <a class="btn" href="/tickets">Annuler</a></div>
+    </form>
+</main>
+</body>
+</html>

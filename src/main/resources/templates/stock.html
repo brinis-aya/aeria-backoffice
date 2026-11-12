@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Stock et coûts')}"></head>
+<body>
+<header th:replace="~{fragments :: nav('stock')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Stock et coûts</h1>
+    <p class="sub">Le stock est décrémenté automatiquement à chaque pièce consommée (RG7).</p>
+    <div class="grid two">
+        <section class="card scroll">
+            <h2>Pièces détachées</h2>
+            <table>
+                <thead><tr><th>Référence</th><th>Libellé</th><th class="n">Stock</th><th class="n">Seuil</th><th class="n">Conso. 90 j</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="p : ${pieces}">
+                    <td th:text="${p.reference}">ref</td>
+                    <td th:text="${p.libelle}">lib</td>
+                    <td class="n" th:text="${p.stock}">0</td>
+                    <td class="n" th:text="${p.seuil_reappro}">0</td>
+                    <td class="n" th:text="${p.consommation_90j}">0</td>
+                    <td><span class="badge bad" th:if="${p.a_commander}">à commander</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="card scroll">
+            <h2>Coût de maintenance par mois</h2>
+            <table>
+                <thead><tr><th>Mois</th><th class="n">Interventions</th><th class="n">Heures</th><th class="n">Main-d'œuvre (€)</th><th class="n">Pièces (€)</th></tr></thead>
+                <tbody>
+                <tr th:each="m : ${couts}">
+                    <td th:text="${@fmt.mois(m.mois)}">mois</td>
+                    <td class="n" th:text="${m.interventions}">0</td>
+                    <td class="n" th:text="${@fmt.nombre(m.heures)}">0</td>
+                    <td class="n" th:text="${@fmt.nombre(m.cout_main_oeuvre)}">0</td>
+                    <td class="n" th:text="${@fmt.nombre(m.cout_pieces)}">0</td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="muted">Main-d'œuvre valorisée au taux interne de 45 €/h.</p>
+        </section>
+    </div>
+</main>
+</body>
+</html>

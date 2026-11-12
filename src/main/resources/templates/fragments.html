@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(titre)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titre} + ' · Aeria back-office'">Aeria</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<header class="top" th:fragment="nav(actif)">
+    <div class="bar">
+        <a class="brand" href="/"><img src="/favicon.svg" width="22" height="22" alt=""> Aeria <span>back-office</span></a>
+        <nav class="main">
+            <a href="/" th:classappend="${actif == 'accueil'} ? 'on'">Tableau de bord</a>
+            <a href="/tickets" th:classappend="${actif == 'tickets'} ? 'on'">Tickets</a>
+            <a href="/capteurs" th:classappend="${actif == 'capteurs'} ? 'on'">Parc</a>
+            <a href="/techniciens" th:classappend="${actif == 'techniciens'} ? 'on'">Techniciens</a>
+            <a href="/stock" th:classappend="${actif == 'stock'} ? 'on'">Stock et coûts</a>
+        </nav>
+        <div class="who">
+            <span th:text="${moi.username}">user</span> <span class="badge" th:text="${responsable} ? 'responsable' : 'technicien'">role</span>
+            <form class="inline" method="post" th:action="@{/logout}"><button type="submit">Déconnexion</button></form>
+        </div>
+    </div>
+</header>
+
+<div th:fragment="flash">
+    <div class="flash ok" th:if="${ok}" th:text="${ok}" role="status"></div>
+    <div class="flash erreur" th:if="${erreur}" th:text="${erreur}" role="alert"></div>
+</div>
+
+<span th:fragment="statut(code)" class="badge"
+      th:classappend="${code == 'cloture' or code == 'en_service' or code == 'reussie'} ? 'ok' :
+                      (${code == 'resolu' or code == 'en_maintenance' or code == 'partielle'} ? 'warn' :
+                      (${code == 'hors_service' or code == 'reforme' or code == 'echec'} ? 'bad' :
+                      (${code == 'en_cours' or code == 'assigne'} ? 'info' : '')))"
+      th:text="${@fmt.statut(code)}">statut</span>
+
+<span th:fragment="priorite(p)" class="badge"
+      th:classappend="${p == 1} ? 'bad' : (${p == 2} ? 'warn' : '')" th:text="${@fmt.priorite(p)}">P</span>
+</body>
+</html>

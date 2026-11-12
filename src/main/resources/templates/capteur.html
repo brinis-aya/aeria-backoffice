@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${c.id})}"></head>
+<body>
+<header th:replace="~{fragments :: nav('capteurs')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <p class="muted"><a href="/capteurs">Parc</a> / <span th:text="${c.id}">LH</span></p>
+    <div class="row" style="justify-content:space-between">
+        <div>
+            <h1 th:text="${c.id} + ' - ' + (${c.site_nom} ?: 'non installé')">LH</h1>
+            <p class="sub"><span th:replace="~{fragments :: statut(${c.statut})}"></span>
+                <span th:text="${c.modele} + ' · n° ' + ${c.numero_serie}">modele</span></p>
+        </div>
+        <a class="btn primary" th:if="${responsable and c.site_nom != null}" th:href="@{/tickets/nouveau(capteur=${c.id})}">Signaler un incident</a>
+    </div>
+
+    <div class="grid kpis">
+        <div class="card kpi"><div class="v" th:text="${c.disponibilite_pct} != null ? ${@fmt.nombre(c.disponibilite_pct)} + ' %' : '-'">-</div><div class="l">disponibilité (365 j)</div></div>
+        <div class="card kpi"><div class="v" th:text="${@fmt.nombre(c.mtbf_jours)}">-</div><div class="l">MTBF (jours)</div></div>
+        <div class="card kpi"><div class="v" th:text="${c.pannes} ?: 0">0</div><div class="l">pannes bloquantes (365 j)</div></div>
+        <div class="card kpi"><div class="v" th:text="${c.taux_rejet_pct} != null ? ${@fmt.nombre(c.taux_rejet_pct)} + ' %' : '-'">-</div><div class="l">messages rejetés</div></div>
+    </div>
+
+    <div class="grid two">
+        <section class="card">
+            <h2>Fiche</h2>
+            <dl class="props">
+                <dt>Polluants</dt><dd th:text="${c.polluants}">pm</dd>
+                <dt>Site</dt><dd th:text="${c.site_nom} != null ? ${c.site_nom} + ', ' + ${c.commune} + ' (' + ${c.environnement} + ')' : '-'">site</dd>
+                <dt>Installé le</dt><dd th:text="${@fmt.date(c.date_pose)} ?: '-'">date</dd>
+                <dt>Dernier message</dt><dd th:text="${@fmt.dateHeure(c.derniere_communication)} ?: 'jamais'">date</dd>
+                <dt>Messages reçus</dt><dd th:text="${c.messages_recus}">0</dd>
+                <dt>Prochain étalonnage</dt><dd th:text="${@fmt.date(c.prochain_etalonnage)} ?: '-'">date</dd>
+                <dt>Fin de vie prévue</dt><dd th:text="${@fmt.date(c.fin_de_vie)}">date</dd>
+            </dl>
+        </section>
+        <section class="card">
+            <h2>Historique des installations (RG2)</h2>
+            <table>
+                <thead><tr><th>Site</th><th>Pose</th><th>Dépose</th></tr></thead>
+                <tbody>
+                <tr th:each="i : ${installations}">
+                    <td th:text="${i.nom} + ', ' + ${i.commune}">site</td>
+                    <td th:text="${@fmt.dateHeure(i.date_pose)}">date</td>
+                    <td th:text="${@fmt.dateHeure(i.date_depose)} ?: '-'">-</td>
+                </tr>
+                <tr th:if="${installations.isEmpty()}"><td colspan="3" class="muted">Jamais installé (en stock).</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+        <h2>Tickets</h2>
+        <div class="scroll">
+        <table>
+            <thead><tr><th>N°</th><th>Ouvert le</th><th>Incident</th><th>Priorité</th><th>Statut</th><th class="n">Durée (h)</th></tr></thead>
+            <tbody>
+            <tr th:each="t : ${tickets}">
+                <td><a th:href="@{/tickets/{id}(id=${t.id})}" th:text="${t.id}">1</a></td>
+                <td th:text="${@fmt.dateHeure(t.ouvert_le)}">date</td>
+                <td th:text="${t.type_libelle} + ' - ' + ${t.titre}">type</td>
+                <td><span th:replace="~{fragments :: priorite(${t.priorite})}"></span></td>
+                <td><span th:replace="~{fragments :: statut(${t.statut})}"></span>
+                    <span class="badge bad" th:if="${t.hors_delai}">hors délai</span></td>
+                <td class="n" th:text="${@fmt.nombre(t.duree_h)}">0</td>
+            </tr>
+            <tr th:if="${tickets.isEmpty()}"><td colspan="6" class="muted">Aucun ticket.</td></tr>
+            </tbody>
+        </table>
+        </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+        <h2>Étalonnages (RG10 : conforme si R² ≥ 0,75 et pente entre 0,7 et 1,3)</h2>
+        <div class="scroll">
+        <table>
+            <thead><tr><th>Période</th><th>Référence</th><th>Polluant</th><th class="n">Pente</th><th class="n">Ordonnée</th><th class="n">R²</th><th>Résultat</th></tr></thead>
+            <tbody>
+            <tr th:each="e : ${etalonnages}">
+                <td th:text="${@fmt.date(e.debut)} + ' → ' + ${@fmt.date(e.fin)}">periode</td>
+                <td th:text="${e.station_reference}">FR</td>
+                <td th:text="${e.polluant}">pm25</td>
+                <td class="n" th:text="${@fmt.nombre(e.pente)}">1</td>
+                <td class="n" th:text="${@fmt.nombre(e.ordonnee)}">0</td>
+                <td class="n" th:text="${@fmt.nombre(e.r2)}">0.9</td>
+                <td><span class="badge" th:classappend="${e.conforme} ? 'ok' : 'bad'" th:text="${e.conforme} ? 'conforme' : 'non conforme'">ok</span></td>
+            </tr>
+            <tr th:if="${etalonnages.isEmpty()}"><td colspan="7" class="muted">Aucun étalonnage.</td></tr>
+            </tbody>
+        </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

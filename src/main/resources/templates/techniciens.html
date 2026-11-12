@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Techniciens')}"></head>
+<body>
+<header th:replace="~{fragments :: nav('techniciens')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Techniciens</h1>
+    <p class="sub">Compétences (code:niveau) et charge de travail - vue <code>v_charge_technicien</code>.</p>
+    <div class="card scroll">
+        <table>
+            <thead><tr><th>Matricule</th><th>Nom</th><th>Zone</th><th>Compétences</th><th class="n">À faire</th>
+                <th class="n">Interventions 30 j</th><th class="n">Heures 30 j</th><th>Statut</th></tr></thead>
+            <tbody>
+            <tr th:each="te : ${techniciens}" th:classappend="${!te.actif} ? 'dim'">
+                <td th:text="${te.matricule}">T</td>
+                <td th:text="${te.nom_complet}">nom</td>
+                <td th:text="${te.zone_code}">zone</td>
+                <td th:text="${te.competences}">comp</td>
+                <td class="n" th:text="${te.interventions_a_faire}">0</td>
+                <td class="n" th:text="${te.interventions_30j}">0</td>
+                <td class="n" th:text="${@fmt.nombre(te.heures_30j)}">0</td>
+                <td><span class="badge" th:classappend="${te.actif} ? 'ok'" th:text="${te.actif} ? 'actif' : 'inactif'">actif</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+        <h2>Planning : interventions non terminées</h2>
+        <div class="scroll">
+        <table>
+            <thead><tr><th>Prévue le</th><th>Technicien</th><th>Ticket</th><th>Capteur</th><th>Site</th><th>Nature</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="i : ${aFaire}">
+                <td th:text="${@fmt.dateHeure(i.planifiee_le)}">date</td>
+                <td th:text="${i.technicien}">tech</td>
+                <td><a th:href="@{/tickets/{id}(id=${i.ticket_id})}" th:text="${i.titre}">titre</a></td>
+                <td th:text="${i.capteur_id}">LH</td>
+                <td th:text="${i.site_nom}">site</td>
+                <td th:text="${@fmt.statut(i.nature)}">nature</td>
+                <td><span class="badge info" th:if="${i.debut != null}">en cours</span></td>
+            </tr>
+            <tr th:if="${aFaire.isEmpty()}"><td colspan="7" class="muted">Aucune intervention en attente.</td></tr>
+            </tbody>
+        </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

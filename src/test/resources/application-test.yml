@@ -1,0 +1,16 @@
+# Tests run against a real PostgreSQL (the rules are triggers): local DB or the CI service container.
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:postgresql://127.0.0.1:5440/backoffice_test}
+    username: ${TEST_DB_USER:backoffice}
+    password: ${TEST_DB_PASSWORD:backoffice}
+  flyway:
+    locations: classpath:db/migration,classpath:db/demo
+    clean-disabled: false
+  thymeleaf:
+    cache: false
+
+aeria:
+  supervision:
+    anomalies-cron: "-"
+    etalonnages-cron: "-"

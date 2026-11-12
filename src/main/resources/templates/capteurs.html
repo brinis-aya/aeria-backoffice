@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Parc')}"></head>
+<body>
+<header th:replace="~{fragments :: nav('capteurs')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Parc de capteurs</h1>
+    <p class="sub">Disponibilité et MTBF calculés sur 365 jours (vue <code>v_disponibilite</code>).</p>
+    <div class="card scroll">
+        <table>
+            <thead><tr><th>Capteur</th><th>Modèle</th><th>Statut</th><th>Site</th><th>Zone</th><th>Dernier message</th>
+                <th class="n">Rejets</th><th class="n">Disponibilité</th><th class="n">MTBF (j)</th><th>Étalonnage</th><th class="n">Tickets</th></tr></thead>
+            <tbody>
+            <tr th:each="c : ${capteurs}" th:classappend="${c.statut == 'reforme'} ? 'dim'">
+                <td><a th:href="@{/capteurs/{id}(id=${c.id})}" th:text="${c.id}">LH</a></td>
+                <td th:text="${c.modele}">modele</td>
+                <td><span th:replace="~{fragments :: statut(${c.statut})}"></span></td>
+                <td th:text="${c.site_nom} ?: '-'">site</td>
+                <td th:text="${c.zone_code} ?: '-'">zone</td>
+                <td th:text="${@fmt.dateHeure(c.derniere_communication)}">date</td>
+                <td class="n" th:text="${c.taux_rejet_pct} != null ? ${@fmt.nombre(c.taux_rejet_pct)} + ' %' : '-'">0</td>
+                <td class="n" th:text="${c.disponibilite_pct} != null ? ${@fmt.nombre(c.disponibilite_pct)} + ' %' : '-'">0</td>
+                <td class="n" th:text="${@fmt.nombre(c.mtbf_jours)}">0</td>
+                <td th:text="${@fmt.date(c.prochain_etalonnage)}">date</td>
+                <td class="n" th:text="${c.tickets_actifs}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

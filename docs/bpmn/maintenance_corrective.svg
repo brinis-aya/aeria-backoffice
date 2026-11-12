@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2504 780" width="2504" height="780" style="font-family:Segoe UI,Helvetica,Arial,sans-serif">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1f2328"/></marker></defs>
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="20" y="36" font-size="17" font-weight="700" fill="#1f2328">Maintenance corrective d'un capteur</text>
+<rect x="20" y="60" width="2464" height="680" fill="none" stroke="#1f2328" stroke-width="1.4"/>
+<rect x="20" y="60" width="2464" height="170" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<line x1="54" y1="60" x2="54" y2="230" stroke="#1f2328" stroke-width="1"/>
+<text transform="translate(41.0 145.0) rotate(-90)" font-size="12" font-weight="600" text-anchor="middle" fill="#1f2328">Supervision (système)</text>
+<rect x="20" y="230" width="2464" height="170" fill="#f6f8fa" stroke="#1f2328" stroke-width="1"/>
+<line x1="54" y1="230" x2="54" y2="400" stroke="#1f2328" stroke-width="1"/>
+<text transform="translate(41.0 315.0) rotate(-90)" font-size="12" font-weight="600" text-anchor="middle" fill="#1f2328">Responsable maintenance</text>
+<rect x="20" y="400" width="2464" height="170" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<line x1="54" y1="400" x2="54" y2="570" stroke="#1f2328" stroke-width="1"/>
+<text transform="translate(41.0 485.0) rotate(-90)" font-size="12" font-weight="600" text-anchor="middle" fill="#1f2328">Technicien</text>
+<rect x="20" y="570" width="2464" height="170" fill="#f6f8fa" stroke="#1f2328" stroke-width="1"/>
+<line x1="54" y1="570" x2="54" y2="740" stroke="#1f2328" stroke-width="1"/>
+<text transform="translate(41.0 655.0) rotate(-90)" font-size="12" font-weight="600" text-anchor="middle" fill="#1f2328">Magasin</text>
+<path d="M142.0 145.0 L215.0 145.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M333.0 145.0 L349.0 145.0 L349.0 315.0 L365.0 315.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M483.0 315.0 L551.0 315.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M574.0 292.0 L574.0 263.0 L706.0 263.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<text x="580.0" y="281.5" font-size="11" fill="#2a78d6" font-weight="600">non</text>
+<path d="M597.0 315.0 L676.0 315.0 L676.0 337.0 L755.0 337.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<text x="644.5" y="309.0" font-size="11" fill="#2a78d6" font-weight="600">oui</text>
+<path d="M873.0 337.0 L904.0 337.0 L904.0 485.0 L935.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1053.0 485.0 L1136.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1159.0 508.0 L1159.0 655.0 L1250.0 655.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<text x="1165.0" y="585.5" font-size="11" fill="#2a78d6" font-weight="600">oui</text>
+<path d="M1182.0 485.0 L1436.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<text x="1317.0" y="479.0" font-size="11" fill="#2a78d6" font-weight="600">non</text>
+<path d="M1368.0 655.0 L1402.0 655.0 L1402.0 485.0 L1436.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1482.0 485.0 L1550.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1668.0 485.0 L1751.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1774.0 508.0 L1774.0 547.0 L994.0 547.0 L994.0 517.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<text x="1780.0" y="531.5" font-size="11" fill="#2a78d6" font-weight="600">non</text>
+<path d="M1797.0 485.0 L1865.0 485.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<text x="1839.0" y="479.0" font-size="11" fill="#2a78d6" font-weight="600">oui</text>
+<path d="M1983.0 485.0 L1999.0 485.0 L1999.0 145.0 L2015.0 145.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M2133.0 145.0 L2149.0 145.0 L2149.0 315.0 L2165.0 315.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M2283.0 315.0 L2356.0 315.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1023.0 435.0 L1023.0 337.0 L1100.0 337.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<path d="M1159.0 305.0 L1159.0 283.0 L814.0 283.0 L814.0 305.0" fill="none" stroke="#1f2328" stroke-width="1.3" marker-end="url(#arr)"/>
+<circle cx="124.0" cy="145.0" r="18" fill="#fff" stroke="#1f2328" stroke-width="1.5"/>
+<text x="124.0" y="177.0" font-size="11" text-anchor="middle" fill="#57606a">Anomalie détectée ou</text>
+<text x="124.0" y="190.0" font-size="11" text-anchor="middle" fill="#57606a">signalée</text>
+<rect x="215.0" y="113.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="227.0" cy="125.0" r="5" stroke="#57606a" fill="none" stroke-width="1.1"/><circle cx="227.0" cy="125.0" r="2" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="232.0" y1="125.0" x2="234.5" y2="125.0" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="230.53553390593274" y1="128.53553390593274" x2="232.3033008588991" y2="130.3033008588991" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="227.0" y1="130.0" x2="227.0" y2="132.5" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="223.46446609406726" y1="128.53553390593274" x2="221.6966991411009" y2="130.3033008588991" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="222.0" y1="125.0" x2="219.5" y2="125.0" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="223.46446609406726" y1="121.46446609406726" x2="221.69669914110088" y2="119.6966991411009" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="227.0" y1="120.0" x2="227.0" y2="117.5" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="230.53553390593274" y1="121.46446609406726" x2="232.3033008588991" y2="119.6966991411009" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="274.0" y="142.5" font-size="11" text-anchor="middle" fill="#1f2328">Créer le ticket</text>
+<text x="274.0" y="155.5" font-size="11" text-anchor="middle" fill="#1f2328">(RG3, RG4)</text>
+<rect x="365.0" y="283.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="377.0" cy="292.0" r="3.2" stroke="#57606a" fill="none" stroke-width="1.1"/><path d="M371.0 302.0 q6 -9 12 0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="424.0" y="312.5" font-size="11" text-anchor="middle" fill="#1f2328">Qualifier le ticket</text>
+<text x="424.0" y="325.5" font-size="11" text-anchor="middle" fill="#1f2328">(type, priorité)</text>
+<path d="M574.0 292.0 L597.0 315.0 L574.0 338.0 L551.0 315.0 Z" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<path d="M566.0 307.0 L582.0 323.0 M582.0 307.0 L566.0 323.0" stroke="#1f2328" stroke-width="2.4"/>
+<text x="574.0" y="352.0" font-size="11" text-anchor="middle" fill="#57606a">Anomalie avérée ?</text>
+<circle cx="724.0" cy="263.0" r="18" fill="#fff" stroke="#1f2328" stroke-width="3.2"/>
+<text x="724.0" y="295.0" font-size="11" text-anchor="middle" fill="#57606a">Ticket annulé</text>
+<rect x="755.0" y="305.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<rect x="761.0" y="311.0" width="14" height="11" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="761.0" y1="315.0" x2="775.0" y2="315.0" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="765.0" y1="315.0" x2="765.0" y2="322.0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="814.0" y="328.0" font-size="11" text-anchor="middle" fill="#1f2328">Choisir un</text>
+<text x="814.0" y="341.0" font-size="11" text-anchor="middle" fill="#1f2328">technicien</text>
+<text x="814.0" y="354.0" font-size="11" text-anchor="middle" fill="#1f2328">compétent (RG6)</text>
+<rect x="935.0" y="453.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="947.0" cy="462.0" r="3.2" stroke="#57606a" fill="none" stroke-width="1.1"/><path d="M941.0 472.0 q6 -9 12 0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="994.0" y="489.0" font-size="11" text-anchor="middle" fill="#1f2328">Intervenir sur site</text>
+<path d="M1159.0 462.0 L1182.0 485.0 L1159.0 508.0 L1136.0 485.0 Z" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<path d="M1151.0 477.0 L1167.0 493.0 M1167.0 477.0 L1151.0 493.0" stroke="#1f2328" stroke-width="2.4"/>
+<text x="1159.0" y="454.0" font-size="11" text-anchor="middle" fill="#57606a">Pièce nécessaire ?</text>
+<rect x="1250.0" y="623.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="1262.0" cy="632.0" r="3.2" stroke="#57606a" fill="none" stroke-width="1.1"/><path d="M1256.0 642.0 q6 -9 12 0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="1309.0" y="646.0" font-size="11" text-anchor="middle" fill="#1f2328">Fournir la pièce,</text>
+<text x="1309.0" y="659.0" font-size="11" text-anchor="middle" fill="#1f2328">commander si sous</text>
+<text x="1309.0" y="672.0" font-size="11" text-anchor="middle" fill="#1f2328">le seuil (RG7)</text>
+<path d="M1459.0 462.0 L1482.0 485.0 L1459.0 508.0 L1436.0 485.0 Z" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<path d="M1451.0 477.0 L1467.0 493.0 M1467.0 477.0 L1451.0 493.0" stroke="#1f2328" stroke-width="2.4"/>
+<rect x="1550.0" y="453.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<path d="M1556.0 468.0 h4 v-7 h3 v7 h2 v-6 h3 v9 h-12 z" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="1609.0" y="476.0" font-size="11" text-anchor="middle" fill="#1f2328">Réparer et</text>
+<text x="1609.0" y="489.0" font-size="11" text-anchor="middle" fill="#1f2328">contrôler les</text>
+<text x="1609.0" y="502.0" font-size="11" text-anchor="middle" fill="#1f2328">mesures</text>
+<path d="M1774.0 462.0 L1797.0 485.0 L1774.0 508.0 L1751.0 485.0 Z" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<path d="M1766.0 477.0 L1782.0 493.0 M1782.0 477.0 L1766.0 493.0" stroke="#1f2328" stroke-width="2.4"/>
+<text x="1774.0" y="454.0" font-size="11" text-anchor="middle" fill="#57606a">Mesures conformes ?</text>
+<rect x="1865.0" y="453.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="1877.0" cy="462.0" r="3.2" stroke="#57606a" fill="none" stroke-width="1.1"/><path d="M1871.0 472.0 q6 -9 12 0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="1924.0" y="482.5" font-size="11" text-anchor="middle" fill="#1f2328">Saisir le compte</text>
+<text x="1924.0" y="495.5" font-size="11" text-anchor="middle" fill="#1f2328">rendu</text>
+<rect x="2015.0" y="113.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="2027.0" cy="125.0" r="5" stroke="#57606a" fill="none" stroke-width="1.1"/><circle cx="2027.0" cy="125.0" r="2" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2032.0" y1="125.0" x2="2034.5" y2="125.0" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2030.5355339059327" y1="128.53553390593274" x2="2032.303300858899" y2="130.3033008588991" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2027.0" y1="130.0" x2="2027.0" y2="132.5" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2023.4644660940673" y1="128.53553390593274" x2="2021.696699141101" y2="130.3033008588991" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2022.0" y1="125.0" x2="2019.5" y2="125.0" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2023.4644660940673" y1="121.46446609406726" x2="2021.696699141101" y2="119.6966991411009" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2027.0" y1="120.0" x2="2027.0" y2="117.5" stroke="#57606a" fill="none" stroke-width="1.1"/><line x1="2030.5355339059327" y1="121.46446609406726" x2="2032.303300858899" y2="119.6966991411009" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="2074.0" y="142.5" font-size="11" text-anchor="middle" fill="#1f2328">Passer le ticket «</text>
+<text x="2074.0" y="155.5" font-size="11" text-anchor="middle" fill="#1f2328">résolu » (RG9)</text>
+<rect x="2165.0" y="283.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="2177.0" cy="292.0" r="3.2" stroke="#57606a" fill="none" stroke-width="1.1"/><path d="M2171.0 302.0 q6 -9 12 0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="2224.0" y="319.0" font-size="11" text-anchor="middle" fill="#1f2328">Valider et clôturer</text>
+<circle cx="2374.0" cy="315.0" r="18" fill="#fff" stroke="#1f2328" stroke-width="3.2"/>
+<text x="2374.0" y="347.0" font-size="11" text-anchor="middle" fill="#57606a">Capteur remis en</text>
+<text x="2374.0" y="360.0" font-size="11" text-anchor="middle" fill="#57606a">service (RG11)</text>
+<rect x="1100.0" y="305.0" width="118" height="64" rx="9" fill="#fff" stroke="#1f2328" stroke-width="1.4"/>
+<circle cx="1112.0" cy="314.0" r="3.2" stroke="#57606a" fill="none" stroke-width="1.1"/><path d="M1106.0 324.0 q6 -9 12 0" stroke="#57606a" fill="none" stroke-width="1.1"/>
+<text x="1159.0" y="334.5" font-size="11" text-anchor="middle" fill="#1f2328">Relancer ou</text>
+<text x="1159.0" y="347.5" font-size="11" text-anchor="middle" fill="#1f2328">réaffecter</text>
+<circle cx="1023.0" cy="453.0" r="18" fill="#fff" stroke="#1f2328" stroke-width="1.5"/>
+<circle cx="1023.0" cy="453.0" r="14" fill="#fff" stroke="#1f2328" stroke-width="1"/>
+<path d="M1023.0 445.0 L1023.0 453.0 L1029.0 453.0" stroke="#1f2328" fill="none" stroke-width="1.3"/>
+<text x="1045.0" y="449.0" font-size="11" fill="#57606a">Délai SLA</text>
+<text x="1045.0" y="462.0" font-size="11" fill="#57606a">dépassé</text>
+<text x="20" y="768" font-size="11" fill="#57606a">BPMN 2.0 - source : docs/bpmn/maintenance_corrective.bpmn (Camunda Modeler, bpmn.io)</text>
+</svg>

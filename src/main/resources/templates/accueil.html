@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Tableau de bord')}"></head>
+<body>
+<header th:replace="~{fragments :: nav('accueil')}"></header>
+<main>
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Tableau de bord</h1>
+    <p class="sub">Parc de capteurs du Havre : état, maintenance en cours et indicateurs.</p>
+
+    <div class="grid kpis">
+        <div class="card kpi"><div class="v" th:text="${kpi.tickets_actifs}">0</div><div class="l">tickets actifs</div></div>
+        <div class="card kpi" th:classappend="${kpi.p1_actifs > 0} ? 'bad'"><div class="v" th:text="${kpi.p1_actifs}">0</div><div class="l">urgents (P1)</div></div>
+        <div class="card kpi" th:classappend="${kpi.hors_delai > 0} ? 'bad'"><div class="v" th:text="${kpi.hors_delai}">0</div><div class="l">hors délai SLA</div></div>
+        <div class="card kpi"><div class="v" th:text="${kpi.a_valider}">0</div><div class="l">à valider</div></div>
+        <div class="card kpi"><div class="v" th:text="${@fmt.nombre(kpi.disponibilite)} + ' %'">99 %</div><div class="l">disponibilité moyenne (365 j)</div></div>
+        <div class="card kpi"><div class="v" th:text="${@fmt.nombre(kpi.mttr_p1_30j)} + ' h'">0 h</div><div class="l">MTTR urgences (30 j)</div></div>
+        <div class="card kpi"><div class="v" th:text="${@fmt.nombre(kpi.sla_30j)} + ' %'">0 %</div><div class="l">respect du SLA (30 j)</div></div>
+        <div class="card kpi"><div class="v" th:text="${kpi.en_service} + ' / ' + ${kpi.en_service + kpi.en_maintenance + kpi.en_stock}">0</div>
+            <div class="l">capteurs en service (<span th:text="${kpi.en_maintenance}">0</span> en maintenance)</div></div>
+    </div>
+
+    <div class="grid two">
+        <section class="card">
+            <h2>Tickets prioritaires</h2>
+            <div class="scroll">
+            <table>
+                <thead><tr><th>N°</th><th>Capteur</th><th>Incident</th><th>Priorité</th><th>Statut</th><th>Échéance</th></tr></thead>
+                <tbody>
+                <tr th:each="t : ${urgents}">
+                    <td><a th:href="@{/tickets/{id}(id=${t.id})}" th:text="${t.id}">1</a></td>
+                    <td><a th:href="@{/capteurs/{id}(id=${t.capteur_id})}" th:text="${t.capteur_id}">LH</a></td>
+                    <td th:text="${t.type_libelle}">type</td>
+                    <td><span th:replace="~{fragments :: priorite(${t.priorite})}"></span></td>
+                    <td><span th:replace="~{fragments :: statut(${t.statut})}"></span></td>
+                    <td><span th:text="${@fmt.dateHeure(t.echeance_sla)}">date</span>
+                        <span class="badge bad" th:if="${t.hors_delai}">dépassée</span></td>
+                </tr>
+                <tr th:if="${urgents.isEmpty()}"><td colspan="6" class="muted">Aucun ticket actif.</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 th:text="${responsable} ? 'Interventions en cours et planifiées' : 'Mes interventions'">Interventions</h2>
+            <div class="scroll">
+            <table>
+                <thead><tr><th>Ticket</th><th>Capteur</th><th>Site</th><th>Prévue le</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="i : ${aFaire}">
+                    <td><a th:href="@{/tickets/{id}(id=${i.ticket_id})}" th:text="${i.titre}">titre</a></td>
+                    <td th:text="${i.capteur_id}">LH</td>
+                    <td th:text="${i.site_nom}">site</td>
+                    <td th:text="${@fmt.dateHeure(i.planifiee_le)}">date</td>
+                    <td><span class="badge info" th:if="${i.debut != null}">en cours</span></td>
+                </tr>
+                <tr th:if="${aFaire.isEmpty()}"><td colspan="5" class="muted">Rien de planifié.</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p class="muted" th:if="${kpi.etalonnages_7j > 0 or kpi.stock_alertes > 0}">
+                <span th:text="${kpi.etalonnages_7j}">0</span> étalonnage(s) à prévoir sous 7 jours ·
+                <a href="/stock"><span th:text="${kpi.stock_alertes}">0</span> pièce(s) à commander</a></p>
+        </section>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+        <h2>Indicateurs mensuels</h2>
+        <div class="scroll">
+        <table>
+            <thead><tr><th>Mois</th><th class="n">Tickets résolus</th><th class="n">MTTR urgences (h)</th><th class="n">Respect du SLA</th></tr></thead>
+            <tbody>
+            <tr th:each="m : ${mensuel}">
+                <td th:text="${@fmt.mois(m.mois)}">mois</td>
+                <td class="n" th:text="${m.tickets}">0</td>
+                <td class="n" th:text="${@fmt.nombre(m.mttr_p1)}">0</td>
+                <td class="n" th:text="${@fmt.nombre(m.sla)} + ' %'">0</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="def_etalonnage_preventif" targetNamespace="https://github.com/brinis-aya/aeria-backoffice" exporter="aeria scripts/diagrams.py" exporterVersion="1.0">
+  <bpmn:collaboration id="collab_etalonnage_preventif">
+    <bpmn:participant id="pool_etalonnage_preventif" name="Étalonnage préventif par colocalisation" processRef="etalonnage_preventif"/>
+  </bpmn:collaboration>
+  <bpmn:process id="etalonnage_preventif" name="Étalonnage préventif par colocalisation" isExecutable="false">
+    <bpmn:laneSet id="lanes">
+      <bpmn:lane id="lane_sys" name="Système">
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_due</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_due</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_none</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_ticket</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_reg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_conf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_coef</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_drift</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_drift</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="lane_resp" name="Responsable maintenance">
+        <bpmn:flowNodeRef>t_plan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_close</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end_ok</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="lane_tech" name="Technicien">
+        <bpmn:flowNodeRef>t_coloc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_back</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="Chaque jour à 6 h">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="timer_daily"><bpmn:timeCycle>R/P1D</bpmn:timeCycle></bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="t_due" name="Calculer les échéances d'étalonnage">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="g_due" name="Échéance à moins de 7 jours ?">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end_none" name="Rien à planifier">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="t_ticket" name="Ouvrir un ticket préventif (RG15)">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="t_plan" name="Planifier la colocalisation">
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:manualTask id="t_coloc" name="Placer le capteur près de la station de référence (7 jours)">
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:outgoing>f7</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:scriptTask id="t_reg" name="Régression capteur / référence : pente, ordonnée, R²">
+      <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:outgoing>f8</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="g_conf" name="Conforme ? (RG10)">
+      <bpmn:incoming>f8</bpmn:incoming>
+      <bpmn:outgoing>f9</bpmn:outgoing>
+      <bpmn:outgoing>f10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="t_coef" name="Enregistrer les coefficients de correction">
+      <bpmn:incoming>f9</bpmn:incoming>
+      <bpmn:outgoing>f12</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="t_drift" name="Ouvrir un ticket « dérive »">
+      <bpmn:incoming>f10</bpmn:incoming>
+      <bpmn:outgoing>f11</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_drift" name="Maintenance corrective">
+      <bpmn:incoming>f11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:manualTask id="t_back" name="Réinstaller le capteur sur son site">
+      <bpmn:incoming>f12</bpmn:incoming>
+      <bpmn:outgoing>f13</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:userTask id="t_close" name="Clôturer le ticket">
+      <bpmn:incoming>f13</bpmn:incoming>
+      <bpmn:outgoing>f14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="end_ok" name="Capteur étalonné">
+      <bpmn:incoming>f14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="t_due"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="t_due" targetRef="g_due"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="g_due" targetRef="end_none" name="non"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="g_due" targetRef="t_ticket" name="oui"/>
+    <bpmn:sequenceFlow id="f5" sourceRef="t_ticket" targetRef="t_plan"/>
+    <bpmn:sequenceFlow id="f6" sourceRef="t_plan" targetRef="t_coloc"/>
+    <bpmn:sequenceFlow id="f7" sourceRef="t_coloc" targetRef="t_reg"/>
+    <bpmn:sequenceFlow id="f8" sourceRef="t_reg" targetRef="g_conf"/>
+    <bpmn:sequenceFlow id="f9" sourceRef="g_conf" targetRef="t_coef" name="oui"/>
+    <bpmn:sequenceFlow id="f10" sourceRef="g_conf" targetRef="t_drift" name="non"/>
+    <bpmn:sequenceFlow id="f11" sourceRef="t_drift" targetRef="end_drift"/>
+    <bpmn:sequenceFlow id="f12" sourceRef="t_coef" targetRef="t_back"/>
+    <bpmn:sequenceFlow id="f13" sourceRef="t_back" targetRef="t_close"/>
+    <bpmn:sequenceFlow id="f14" sourceRef="t_close" targetRef="end_ok"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="dia_etalonnage_preventif">
+    <bpmndi:BPMNPlane id="plane_etalonnage_preventif" bpmnElement="collab_etalonnage_preventif">
+      <bpmndi:BPMNShape id="pool_etalonnage_preventif_di" bpmnElement="pool_etalonnage_preventif" isHorizontal="true"><dc:Bounds x="20" y="60" width="1864" height="510"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_sys_di" bpmnElement="lane_sys" isHorizontal="true"><dc:Bounds x="54" y="60" width="1830" height="170"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_resp_di" bpmnElement="lane_resp" isHorizontal="true"><dc:Bounds x="54" y="230" width="1830" height="170"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_tech_di" bpmnElement="lane_tech" isHorizontal="true"><dc:Bounds x="54" y="400" width="1830" height="170"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="106" y="127" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_due_di" bpmnElement="t_due"><dc:Bounds x="215" y="113" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_due_di" bpmnElement="g_due" isMarkerVisible="true"><dc:Bounds x="401" y="122" width="46" height="46"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_none_di" bpmnElement="end_none"><dc:Bounds x="556" y="82" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_ticket_di" bpmnElement="t_ticket"><dc:Bounds x="515" y="143" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_plan_di" bpmnElement="t_plan"><dc:Bounds x="665" y="283" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_coloc_di" bpmnElement="t_coloc"><dc:Bounds x="815" y="453" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_reg_di" bpmnElement="t_reg"><dc:Bounds x="965" y="113" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_conf_di" bpmnElement="g_conf" isMarkerVisible="true"><dc:Bounds x="1151" y="122" width="46" height="46"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_coef_di" bpmnElement="t_coef"><dc:Bounds x="1265" y="73" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_drift_di" bpmnElement="t_drift"><dc:Bounds x="1265" y="158" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_drift_di" bpmnElement="end_drift"><dc:Bounds x="1456" y="172" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_back_di" bpmnElement="t_back"><dc:Bounds x="1415" y="453" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_close_di" bpmnElement="t_close"><dc:Bounds x="1565" y="283" width="118" height="64"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_ok_di" bpmnElement="end_ok"><dc:Bounds x="1756" y="297" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="142" y="145"/>
+        <di:waypoint x="215" y="145"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="333" y="145"/>
+        <di:waypoint x="401" y="145"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="424" y="122"/>
+        <di:waypoint x="424" y="100"/>
+        <di:waypoint x="556" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="447" y="145"/>
+        <di:waypoint x="481" y="145"/>
+        <di:waypoint x="481" y="175"/>
+        <di:waypoint x="515" y="175"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="633" y="175"/>
+        <di:waypoint x="649" y="175"/>
+        <di:waypoint x="649" y="315"/>
+        <di:waypoint x="665" y="315"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="783" y="315"/>
+        <di:waypoint x="799" y="315"/>
+        <di:waypoint x="799" y="485"/>
+        <di:waypoint x="815" y="485"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
+        <di:waypoint x="933" y="485"/>
+        <di:waypoint x="949" y="485"/>
+        <di:waypoint x="949" y="145"/>
+        <di:waypoint x="965" y="145"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
+        <di:waypoint x="1083" y="145"/>
+        <di:waypoint x="1151" y="145"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
+        <di:waypoint x="1174" y="122"/>
+        <di:waypoint x="1174" y="105"/>
+        <di:waypoint x="1265" y="105"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10">
+        <di:waypoint x="1174" y="168"/>
+        <di:waypoint x="1174" y="190"/>
+        <di:waypoint x="1265" y="190"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11">
+        <di:waypoint x="1383" y="190"/>
+        <di:waypoint x="1456" y="190"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12">
+        <di:waypoint x="1383" y="105"/>
+        <di:waypoint x="1399" y="105"/>
+        <di:waypoint x="1399" y="485"/>
+        <di:waypoint x="1415" y="485"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13">
+        <di:waypoint x="1533" y="485"/>
+        <di:waypoint x="1549" y="485"/>
+        <di:waypoint x="1549" y="315"/>
+        <di:waypoint x="1565" y="315"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14">
+        <di:waypoint x="1683" y="315"/>
+        <di:waypoint x="1756" y="315"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

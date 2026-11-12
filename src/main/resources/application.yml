@@ -1,0 +1,52 @@
+server:
+  port: ${PORT:8084}
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        same-site: lax
+
+spring:
+  application:
+    name: aeria-backoffice
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://127.0.0.1:5442/backoffice}
+    username: ${DB_USER:backoffice}
+    password: ${DB_PASSWORD:backoffice}
+  flyway:
+    # the "demo" profile adds the demo data set (classpath:db/demo)
+    locations: classpath:db/migration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Europe/Paris
+  thymeleaf:
+    cache: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+aeria:
+  zone-id: Europe/Paris
+  supervision:
+    # detecter_anomalies() - RG14
+    anomalies-cron: "0 */5 * * * *"
+    # planifier_etalonnages() - RG15
+    etalonnages-cron: "0 0 6 * * *"
+    # optional: pull sensor health from module 1 (aeria-iot-sensors), e.g. http://127.0.0.1:8081
+    iot-url: ${IOT_URL:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: demo
+  flyway:
+    locations: classpath:db/migration,classpath:db/demo

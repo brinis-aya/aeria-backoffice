@@ -1,0 +1,36 @@
+# Aeria back-office: PostgreSQL + Spring Boot. Demo data are loaded by the "demo" profile.
+name: aeria-backoffice
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: backoffice
+      POSTGRES_USER: backoffice
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-backoffice}
+    ports:
+      - "127.0.0.1:${PG_PORT:-5442}:5432"
+    volumes:
+      - bodata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backoffice"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/backoffice
+      DB_USER: backoffice
+      DB_PASSWORD: ${DB_PASSWORD:-backoffice}
+      SPRING_PROFILES_ACTIVE: ${PROFILE:-demo}
+      IOT_URL: ${IOT_URL:-}
+      TZ: Europe/Paris
+    ports:
+      - "127.0.0.1:8084:8084"
+
+volumes:
+  bodata:
