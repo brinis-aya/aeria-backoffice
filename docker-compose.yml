@@ -28,6 +28,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-backoffice}
       SPRING_PROFILES_ACTIVE: ${PROFILE:-demo}
       IOT_URL: ${IOT_URL:-}
+      SERVER_ADDRESS: 0.0.0.0   # inside the container only; published on 127.0.0.1 below
       TZ: Europe/Paris
     ports:
       - "127.0.0.1:8084:8084"

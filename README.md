@@ -23,7 +23,7 @@ are enforced **in SQL** by PostgreSQL triggers and constraints.
 | **BPMN** | corrective maintenance, preventive calibration, sensor deployment: [`docs/bpmn`](docs/bpmn) (`.bpmn` files open in Camunda Modeler / bpmn.io) |
 | **Application** | Spring Boot 3.5 + Thymeleaf + JdbcTemplate (SQL-first, no ORM), two roles, read-only JSON API |
 | **Demo data** | one year of fleet life around Le Havre (12 sites, 16 sensors, 7 technicians, 150 tickets, 170 interventions), replayed **through** the triggers |
-| **Tests** | 19 tests on a real PostgreSQL: one per management rule, plus roles, CSRF and ownership |
+| **Tests** | 24 tests on a real PostgreSQL: one per management rule, plus roles, CSRF, ownership, account lockout and the security log |
 
 ![Data model (MCD)](docs/figures/mcd.svg)
 
@@ -79,6 +79,15 @@ Set `IOT_URL` (e.g. `http://127.0.0.1:8081`) to pull sensor health from module 1
 ```bash
 TEST_DB_URL=jdbc:postgresql://127.0.0.1:5432/backoffice_test mvn verify   # needs an empty test database
 ```
+
+## Security (after the audit of module 5)
+
+- listens on `127.0.0.1` by default (`SERVER_ADDRESS`), to be exposed through a TLS reverse proxy only;
+- an account is locked for 15 minutes after 5 failed logins (same generic message, no user enumeration);
+- security events on the `AERIA_SECURITY` logger (`event=login_failure user=… ip=…`), sanitised against log
+  injection and decoded by the [Wazuh rules](https://github.com/brinis-aya/aeria-security/tree/main/wazuh);
+- CSP, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`; Spring Boot 3.5.16 with patched Tomcat,
+  Jackson and PostgreSQL driver.
 
 ## API (for the dashboard)
 

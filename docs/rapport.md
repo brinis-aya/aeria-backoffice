@@ -215,7 +215,7 @@ Sécurité :
 
 ## 8. Tests
 
-19 tests JUnit sur une **vraie base PostgreSQL**, recréée à chaque exécution (migrations et année de
+24 tests JUnit sur une **vraie base PostgreSQL**, recréée à chaque exécution (migrations et année de
 démonstration). Les règles sont des triggers : une base en mémoire de type H2 ne les exécuterait pas.
 
 - **12 tests de règles** :
@@ -223,6 +223,9 @@ démonstration). Les règles sont des triggers : une base en mémoire de type H2
   - le cycle de vie complet, avec l'historique et l'auteur ;
   - la proposition de techniciens ;
   - la cohérence des indicateurs.
+- **5 tests de sécurité** ajoutés après l'audit du module 5 : écoute locale par défaut, verrouillage après
+  5 échecs (même avec le bon mot de passe), remise à zéro après un succès, en-têtes, et journal de sécurité
+  non falsifiable par un identifiant contenant un saut de ligne ;
 - **7 tests web** : redirection vers la connexion, affichage des pages, interdictions par rôle, CSRF, technicien
   qui tente de démarrer l'intervention d'un collègue (403), message d'erreur RG3 remonté à l'utilisateur, API en
   HTTP Basic.
@@ -236,7 +239,20 @@ Pendant la recette dans le navigateur, deux défauts ont été trouvés et corri
 - un visiteur anonyme recevait 401 au lieu d'être redirigé vers la page de connexion. Le second fait désormais
   l'objet d'un test.
 
-## 9. Limites et suites
+## 9. Durcissement après l'audit de sécurité (module 5)
+
+L'audit du module 5 a relevé plusieurs constats sur ce module. Ils ont été corrigés, puis re-testés :
+
+| Constat | Correction |
+|---|---|
+| Application à l'écoute sur toutes les interfaces, en HTTP | écoute sur `127.0.0.1` par défaut ; l'image Docker n'écoute sur toutes les interfaces qu'à l'intérieur du conteneur |
+| Aucune limite de tentatives de connexion | compte verrouillé 15 minutes après 5 échecs en 15 minutes |
+| Aucun événement de sécurité journalisé | journal `AERIA_SECURITY` (échecs, verrouillages, refus d'accès), protégé contre l'injection |
+| En-têtes `Referrer-Policy` et `Permissions-Policy` absents | ajoutés |
+| Spring Boot 3.5.7 : 76 vulnérabilités connues | 3.5.16 et versions corrigées de Tomcat, Jackson et du pilote PostgreSQL : 3 vulnérabilités restantes, sans impact ici |
+| Couleur d'accent sous le contraste WCAG AA (4,4:1) | `#1d66bd` (5,7:1) |
+
+## 10. Limites et suites
 
 - **Données simulées** : l'année de démonstration est générée. Les indicateurs illustrent les calculs, pas un
   retour d'expérience réel.
@@ -249,7 +265,7 @@ Pendant la recette dans le navigateur, deux défauts ont été trouvés et corri
 - **Mobilité** : une application mobile hors ligne pour les techniciens (photos, signature) compléterait
   l'interface web.
 
-## 10. Lien avec les autres modules
+## 11. Lien avec les autres modules
 
 - **Module 1** : identifiants des capteurs communs (`LH-001`…). La supervision lit `/api/sensors` (dernier
   message, messages rejetés) quand `IOT_URL` est défini.

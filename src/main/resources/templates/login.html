@@ -6,7 +6,8 @@
     <div class="card">
         <h1>Aeria back-office</h1>
         <p class="sub">Gestion du parc de capteurs et de la maintenance</p>
-        <div class="flash erreur" th:if="${param.error}" role="alert">Identifiant ou mot de passe incorrect.</div>
+        <div class="flash erreur" th:if="${param.error}" role="alert">Identifiant ou mot de passe incorrect.
+            Après 5 échecs, le compte est bloqué 15 minutes.</div>
         <div class="flash ok" th:if="${param.deconnecte}" role="status">Vous êtes déconnecté.</div>
         <form class="stack" method="post" th:action="@{/login}">
             <label>Identifiant <input name="username" autocomplete="username" required autofocus></label>

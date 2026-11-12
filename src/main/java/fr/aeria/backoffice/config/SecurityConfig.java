@@ -12,8 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 /**
  * Two roles (RG16):
@@ -21,7 +24,8 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
  *   <li>RESPONSABLE - qualifies, assigns, closes and cancels tickets, manages technicians and stock;</li>
  *   <li>TECHNICIEN - sees the fleet and the tickets, starts and finishes <em>their own</em> interventions.</li>
  * </ul>
- * Accounts live in the {@code utilisateur} table (BCrypt hashes).
+ * Accounts live in the {@code utilisateur} table (BCrypt hashes). Repeated failures lock the account
+ * ({@link SecurityEvents}).
  */
 @Configuration
 public class SecurityConfig {
@@ -32,7 +36,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService users(JdbcTemplate jdbc) {
+    UserDetailsService users(JdbcTemplate jdbc, SecurityEvents events) {
         return login -> jdbc.query(
                 "SELECT login, mot_de_passe, role, actif, technicien_id FROM utilisateur WHERE login = ?",
                 rs -> {
@@ -41,12 +45,22 @@ public class SecurityConfig {
                     }
                     Integer tech = (Integer) rs.getObject("technicien_id");
                     return new AeriaUser(rs.getString("login"), rs.getString("mot_de_passe"),
-                            rs.getBoolean("actif"), rs.getString("role"), tech);
+                            rs.getBoolean("actif"), !events.isLocked(login), rs.getString("role"), tech);
                 }, login);
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    AccessDeniedHandler accessDeniedHandler(SecurityEvents events) {
+        AccessDeniedHandlerImpl delegate = new AccessDeniedHandlerImpl();
+        return (request, response, ex) -> {
+            events.accessDenied(request.getRemoteUser(), request.getRemoteAddr(), request.getMethod(),
+                    request.getRequestURI());
+            delegate.handle(request, response, ex);
+        };
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http, AccessDeniedHandler accessDeniedHandler) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/favicon.svg", "/actuator/health").permitAll()
@@ -58,6 +72,7 @@ public class SecurityConfig {
             .logout(logout -> logout.logoutSuccessUrl("/login?deconnecte"))
             .httpBasic(Customizer.withDefaults())  // read-only JSON API for the dashboard (module 6)
             .exceptionHandling(ex -> ex
+                .accessDeniedHandler(accessDeniedHandler)
                 // the JSON API answers 401, every page redirects to the login form (whatever the Accept header)
                 .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
                         request -> request.getRequestURI().startsWith("/api/"))
@@ -65,7 +80,9 @@ public class SecurityConfig {
             .headers(h -> h
                 .contentSecurityPolicy(csp -> csp.policyDirectives(
                     "default-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; form-action 'self'"))
-                .frameOptions(f -> f.deny()));
+                .frameOptions(f -> f.deny())
+                .referrerPolicy(r -> r.policy(ReferrerPolicy.SAME_ORIGIN))
+                .permissionsPolicyHeader(p -> p.policy("geolocation=(), camera=(), microphone=(), payment=()")));
         return http.build();
     }
 }

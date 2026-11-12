@@ -11,7 +11,11 @@ public class AeriaUser extends User {
     private final Integer technicienId;
 
     public AeriaUser(String login, String hash, boolean active, String role, Integer technicienId) {
-        super(login, hash, active, true, true, true, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+        this(login, hash, active, true, role, technicienId);
+    }
+
+    public AeriaUser(String login, String hash, boolean active, boolean notLocked, String role, Integer technicienId) {
+        super(login, hash, active, true, true, notLocked, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
         this.technicienId = technicienId;
     }
 
