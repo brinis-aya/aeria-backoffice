@@ -107,7 +107,7 @@ docker rm -f bo-test
 - security events on the `AERIA_SECURITY` logger (`event=login_failure user=… ip=…`), sanitised against log
   injection and decoded by the [Wazuh rules](https://github.com/brinis-aya/aeria-security/tree/main/wazuh);
 - CSP, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`; Spring Boot 3.5.16 with patched Tomcat,
-  Jackson and PostgreSQL driver.
+  Jackson, log4j and PostgreSQL driver.
 
 ## API (for the dashboard)
 

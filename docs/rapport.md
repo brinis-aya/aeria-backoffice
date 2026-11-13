@@ -249,7 +249,7 @@ L'audit du module 5 a relevé plusieurs constats sur ce module. Ils ont été co
 | Aucune limite de tentatives de connexion | compte verrouillé 15 minutes après 5 échecs en 15 minutes |
 | Aucun événement de sécurité journalisé | journal `AERIA_SECURITY` (échecs, verrouillages, refus d'accès), protégé contre l'injection |
 | En-têtes `Referrer-Policy` et `Permissions-Policy` absents | ajoutés |
-| Spring Boot 3.5.7 : 76 vulnérabilités connues | 3.5.16 et versions corrigées de Tomcat, Jackson et du pilote PostgreSQL : 3 vulnérabilités restantes, sans impact ici |
+| Spring Boot 3.5.7 : 76 vulnérabilités connues | 3.5.16 et versions corrigées de Tomcat, Jackson, log4j et du pilote PostgreSQL : 2 vulnérabilités restantes, sans impact ici |
 | Couleur d'accent sous le contraste WCAG AA (4,4:1) | `#1d66bd` (5,7:1) |
 
 ## 10. Limites et suites
