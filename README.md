@@ -69,15 +69,35 @@ login to PostgreSQL (`SET LOCAL aeria.utilisateur`) and turns refusals into read
 docker compose up --build                  # PostgreSQL + app with the demo year, http://127.0.0.1:8084
 ```
 
+The first build takes a few minutes (Maven downloads); the database then replays the demo year (about
+30 s) before the login page answers.
+
 Demo accounts (local demo only): `responsable` / `demo-responsable` (manager), and technicians `clefevre`,
 `imorel`, `lnguyen`, `ybenali`, `hduval`, `tgirard` / `demo-technicien`.
+
+> After 5 wrong passwords an account is locked for 15 minutes (security requirement). Use another account,
+> or restart the app (`docker compose restart app`) to clear the counters.
+
+**What to try:**
+
+1. log in as `responsable`: the dashboard, then *Tickets*;
+2. open the ticket « Aucune mesure reçue » opened by the supervision, and plan an intervention: only the
+   competent technicians are proposed;
+3. log in as that technician (e.g. `lnguyen`), start then finish the intervention with a spare part: the
+   ticket becomes « Résolu », the stock goes down, and the history records who did what;
+4. try a forbidden action, e.g. a technician closing a ticket: it is refused (403).
 
 Without Docker: create a PostgreSQL database and run
 `mvn spring-boot:run -Dspring-boot.run.profiles=demo` with `DB_URL`, `DB_USER`, `DB_PASSWORD`.
 Set `IOT_URL` (e.g. `http://127.0.0.1:8081`) to pull sensor health from module 1.
 
+**Tests** (Java 21; the business rules are triggers, so the tests need a real, empty PostgreSQL):
+
 ```bash
-TEST_DB_URL=jdbc:postgresql://127.0.0.1:5432/backoffice_test mvn verify   # needs an empty test database
+docker run -d --name bo-test -p 127.0.0.1:5432:5432 -e POSTGRES_DB=backoffice_test \
+  -e POSTGRES_USER=backoffice -e POSTGRES_PASSWORD=backoffice postgres:17-alpine
+mvn verify                                  # 24 tests (TEST_DB_URL overrides the default URL)
+docker rm -f bo-test
 ```
 
 ## Security (after the audit of module 5)
